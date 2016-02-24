@@ -85,9 +85,7 @@ public class AesCipher {
 		for (int j = 0; j < 4; j++) {
 			for (int i = 0; i < 4; i++) {
 				// Splits the key for every 2 values using subString() method.
-
 				keyMatrix[i][j] = KeyHex.substring(value, value + 2);
-
 				value += 2;
 			}
 		}
