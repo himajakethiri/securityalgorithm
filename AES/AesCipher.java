@@ -89,9 +89,7 @@ public class AesCipher {
 				keyMatrix[i][j] = KeyHex.substring(value, value + 2);
 
 				value += 2;
-
 			}
-
 		}
 		getWMatrix();
 		printKeys();
