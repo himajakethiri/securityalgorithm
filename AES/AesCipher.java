@@ -1,5 +1,10 @@
+/**
+ * @author Himaja
+ * @CWID 20062532
+ * @Program produces 10 round keys by taking one input key
+ */
 public class AesCipher {
-
+	// S_Box is a substitute box which is an array
 	public static final String[][] S_Box = {
 			{ "63", "7C", "77", "7B", "F2", "6B", "6F", "C5", "30", "01", "67",
 					"2B", "FE", "D7", "AB", "76" },
@@ -33,6 +38,7 @@ public class AesCipher {
 					"E9", "CE", "55", "28", "DF" },
 			{ "8C", "A1", "89", "0D", "BF", "E6", "42", "68", "41", "99", "2D",
 					"0F", "B0", "54", "BB", "16" } };
+	// Round_keys is to generate the keys
 	public static final String[][] Round_Keys = {
 			{ "8D", "01", "02", "04", "08", "10", "20", "40", "80", "1B", "36",
 					"6C", "D8", "AB", "4D", "9A" },
@@ -66,16 +72,22 @@ public class AesCipher {
 					"39", "72", "E4", "D3", "BD" },
 			{ "61", "C2", "9F", "25", "4A", "94", "33", "66", "CC", "83", "1D",
 					"3A", "74", "E8", "CB", "8D" } };
+	// It will create two-dimensional array of keyMatrix[4][4]
 	private final static String[][] keyMatrix = new String[4][4];
+	// It will create two-dimensional array of WMatrix[4][44]
 	private final static String[][] WMatrix = new String[4][44];
 
+	/*
+	 * Produces the matrix with 4*4 by taking KeyHex(128-bit) input
+	 */
 	public static void aesRoundKeys(String KeyHex) {
 		int value = 0;
 		for (int j = 0; j < 4; j++) {
 			for (int i = 0; i < 4; i++) {
+				// Splits the key for every 2 values using subString() method.
+
 				keyMatrix[i][j] = KeyHex.substring(value, value + 2);
 
-				System.out.println(keyMatrix[i][j]);
 				value += 2;
 
 			}
@@ -85,7 +97,12 @@ public class AesCipher {
 		printKeys();
 	}
 
-	// XORing the values
+	/*
+	 * It will perform the XOR operation of hexadecimal values hex1 is first
+	 * value and hex 2 is the second value hexResult is the result produced
+	 * after XORing.
+	 */
+
 	private static String ComputeXOR(String hex1, String hex2) {
 		int hexVal1 = Integer.parseInt(hex1, 16);
 		int hexVal2 = Integer.parseInt(hex2, 16);
@@ -95,7 +112,9 @@ public class AesCipher {
 
 	}
 
-	// aesSBox
+	/*
+	 * Takes an input from S_Box using inHex based on firstInt and secondInt
+	 */
 	private static String aesSBox(String inHex) {
 		Integer firstInt = Integer.parseInt(inHex.split("")[0], 16);
 		Integer secondInt = Integer.parseInt(inHex.split("")[1], 16);
@@ -103,14 +122,19 @@ public class AesCipher {
 
 	}
 
-	// aesRon
+	/*
+	 * Takes the Rcon value using rounds
+	 */
 	private static String aesRcon(int round) {
 		return Round_Keys[0][round / 4];
 
 	}
 
-	// 3.a and 3.b
+	/*
+	 * To perform operations on WMatrix to generate elements into array
+	 */
 	private static void getWMatrix() {
+		// It will create the new matrix
 		String W_New[][] = new String[1][4];
 		for (int i = 0; i < 4; i++) {
 			for (int j = 0; j < 4; j++) {
@@ -118,6 +142,7 @@ public class AesCipher {
 			}
 		}
 		for (int j = 4; j < 44; j++) {
+			// If j value is not multiple of 4 then
 			if (j % 4 != 0) {
 				for (int i = 0; i < 4; i++) {
 					WMatrix[i][j] = ComputeXOR(WMatrix[i][j - 4],
@@ -126,11 +151,12 @@ public class AesCipher {
 			}
 
 			else {
+				// Performing left shift operation and transpose of matrix
 				W_New[0][0] = aesSBox(WMatrix[1][j - 1]);
 				W_New[0][1] = aesSBox(WMatrix[2][j - 1]);
 				W_New[0][2] = aesSBox(WMatrix[3][j - 1]);
 				W_New[0][3] = aesSBox(WMatrix[0][j - 1]);
-
+				// XOR the Rcon_value with the new matrix
 				String Rcon_Val = aesRcon(j);
 				W_New[0][0] = ComputeXOR(Rcon_Val, W_New[0][0]);
 				for (int i = 0; i < 4; i++) {
@@ -143,39 +169,23 @@ public class AesCipher {
 
 	}
 
+	/*
+	 * It will print the all round keys in 10 rounds
+	 */
 	public static void printKeys() {
-		String Round_key = "";
-		
-		for(int j=0;j<44;j++){
-			for(int i=0;i<4;i++){
-				int rounds=0;
-				if(rounds==11){
-				Round_key=Round_key+WMatrix[i][j];
-				rounds++;
-			}
-				else
-				{
-					System.out.println(Round_key);
-					rounds=0;
+		int Rounds_key = 1;
+		int x = 0;
+		while (Rounds_key <= 11) {
+			for (int j = 1; j <= 4; j++, x++) {
+				for (int i = 0; i <= 3; i++) {
+					System.out.print(WMatrix[i][x].toUpperCase());
 				}
-					
-			
-		
-//		int count = 0;
-//		int b = 0;
-//		int numberOfRounds =11;
-//		while (count < numberOfRounds) {
-//			for (int j = 0; j < 4; b++, j++) {
-//				for (int a = 0; a < 4; a++) {
-//					System.out.print(WMatrix[a][b]);
-//				}
-//			}
-//			System.out.println("");
-//			count++;
+			}
+			System.out.println();
+			Rounds_key++;
 		}
-		
-		
+		System.out.println("");
 
 	}
-}
+
 }
