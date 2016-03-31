@@ -1,9 +1,21 @@
 /**
- * @author Himaja
- * @CWID 20062532
- * @Program produces 10 round keys by taking one input key
+ * file: AesCipher.java 
+ * author: Himaja Kethiri 
+ * course: Security Algorithms and
+ * Protocols assignment: lab 3
+ * Due date: March 31, 2016
+ * version: 1.3
+ * 
+ * This file contains all methods which we have used to generate 11 round keys
+ * by implementing in AES algorithm.It also contains the some methods to encrypt 
+ * the plaintext using key.
+ * 
  */
-public class AesCipher {
+/**
+ * @author himaja
+ *
+ */
+public class AEScipher {
 	// S_Box is a substitute box which is an array
 	public static final String[][] S_Box = {
 			{ "63", "7C", "77", "7B", "F2", "6B", "6F", "C5", "30", "01", "67",
@@ -38,7 +50,7 @@ public class AesCipher {
 					"E9", "CE", "55", "28", "DF" },
 			{ "8C", "A1", "89", "0D", "BF", "E6", "42", "68", "41", "99", "2D",
 					"0F", "B0", "54", "BB", "16" } };
-	// Round_keys is to generate the keys
+	// Rcon is a round constant look up table
 	public static final String[][] Round_Keys = {
 			{ "8D", "01", "02", "04", "08", "10", "20", "40", "80", "1B", "36",
 					"6C", "D8", "AB", "4D", "9A" },
@@ -72,13 +84,72 @@ public class AesCipher {
 					"39", "72", "E4", "D3", "BD" },
 			{ "61", "C2", "9F", "25", "4A", "94", "33", "66", "CC", "83", "1D",
 					"3A", "74", "E8", "CB", "8D" } };
+	//Multiplication with 2 look-up table
+	public static int[] mc2 = { 0x00, 0x02, 0x04, 0x06, 0x08, 0x0a, 0x0c, 0x0e,
+			0x10, 0x12, 0x14, 0x16, 0x18, 0x1a, 0x1c, 0x1e, 0x20, 0x22, 0x24,
+			0x26, 0x28, 0x2a, 0x2c, 0x2e, 0x30, 0x32, 0x34, 0x36, 0x38, 0x3a,
+			0x3c, 0x3e, 0x40, 0x42, 0x44, 0x46, 0x48, 0x4a, 0x4c, 0x4e, 0x50,
+			0x52, 0x54, 0x56, 0x58, 0x5a, 0x5c, 0x5e, 0x60, 0x62, 0x64, 0x66,
+			0x68, 0x6a, 0x6c, 0x6e, 0x70, 0x72, 0x74, 0x76, 0x78, 0x7a, 0x7c,
+			0x7e, 0x80, 0x82, 0x84, 0x86, 0x88, 0x8a, 0x8c, 0x8e, 0x90, 0x92,
+			0x94, 0x96, 0x98, 0x9a, 0x9c, 0x9e, 0xa0, 0xa2, 0xa4, 0xa6, 0xa8,
+			0xaa, 0xac, 0xae, 0xb0, 0xb2, 0xb4, 0xb6, 0xb8, 0xba, 0xbc, 0xbe,
+			0xc0, 0xc2, 0xc4, 0xc6, 0xc8, 0xca, 0xcc, 0xce, 0xd0, 0xd2, 0xd4,
+			0xd6, 0xd8, 0xda, 0xdc, 0xde, 0xe0, 0xe2, 0xe4, 0xe6, 0xe8, 0xea,
+			0xec, 0xee, 0xf0, 0xf2, 0xf4, 0xf6, 0xf8, 0xfa, 0xfc, 0xfe, 0x1b,
+			0x19, 0x1f, 0x1d, 0x13, 0x11, 0x17, 0x15, 0x0b, 0x09, 0x0f, 0x0d,
+			0x03, 0x01, 0x07, 0x05, 0x3b, 0x39, 0x3f, 0x3d, 0x33, 0x31, 0x37,
+			0x35, 0x2b, 0x29, 0x2f, 0x2d, 0x23, 0x21, 0x27, 0x25, 0x5b, 0x59,
+			0x5f, 0x5d, 0x53, 0x51, 0x57, 0x55, 0x4b, 0x49, 0x4f, 0x4d, 0x43,
+			0x41, 0x47, 0x45, 0x7b, 0x79, 0x7f, 0x7d, 0x73, 0x71, 0x77, 0x75,
+			0x6b, 0x69, 0x6f, 0x6d, 0x63, 0x61, 0x67, 0x65, 0x9b, 0x99, 0x9f,
+			0x9d, 0x93, 0x91, 0x97, 0x95, 0x8b, 0x89, 0x8f, 0x8d, 0x83, 0x81,
+			0x87, 0x85, 0xbb, 0xb9, 0xbf, 0xbd, 0xb3, 0xb1, 0xb7, 0xb5, 0xab,
+			0xa9, 0xaf, 0xad, 0xa3, 0xa1, 0xa7, 0xa5, 0xdb, 0xd9, 0xdf, 0xdd,
+			0xd3, 0xd1, 0xd7, 0xd5, 0xcb, 0xc9, 0xcf, 0xcd, 0xc3, 0xc1, 0xc7,
+			0xc5, 0xfb, 0xf9, 0xff, 0xfd, 0xf3, 0xf1, 0xf7, 0xf5, 0xeb, 0xe9,
+			0xef, 0xed, 0xe3, 0xe1, 0xe7, 0xe5 };
+    //Multiplication with 3 look-up table
+	public static int[] mc3 = { 0x00, 0x03, 0x06, 0x05, 0x0c, 0x0f, 0x0a, 0x09,
+			0x18, 0x1b, 0x1e, 0x1d, 0x14, 0x17, 0x12, 0x11, 0x30, 0x33, 0x36,
+			0x35, 0x3c, 0x3f, 0x3a, 0x39, 0x28, 0x2b, 0x2e, 0x2d, 0x24, 0x27,
+			0x22, 0x21, 0x60, 0x63, 0x66, 0x65, 0x6c, 0x6f, 0x6a, 0x69, 0x78,
+			0x7b, 0x7e, 0x7d, 0x74, 0x77, 0x72, 0x71, 0x50, 0x53, 0x56, 0x55,
+			0x5c, 0x5f, 0x5a, 0x59, 0x48, 0x4b, 0x4e, 0x4d, 0x44, 0x47, 0x42,
+			0x41, 0xc0, 0xc3, 0xc6, 0xc5, 0xcc, 0xcf, 0xca, 0xc9, 0xd8, 0xdb,
+			0xde, 0xdd, 0xd4, 0xd7, 0xd2, 0xd1, 0xf0, 0xf3, 0xf6, 0xf5, 0xfc,
+			0xff, 0xfa, 0xf9, 0xe8, 0xeb, 0xee, 0xed, 0xe4, 0xe7, 0xe2, 0xe1,
+			0xa0, 0xa3, 0xa6, 0xa5, 0xac, 0xaf, 0xaa, 0xa9, 0xb8, 0xbb, 0xbe,
+			0xbd, 0xb4, 0xb7, 0xb2, 0xb1, 0x90, 0x93, 0x96, 0x95, 0x9c, 0x9f,
+			0x9a, 0x99, 0x88, 0x8b, 0x8e, 0x8d, 0x84, 0x87, 0x82, 0x81, 0x9b,
+			0x98, 0x9d, 0x9e, 0x97, 0x94, 0x91, 0x92, 0x83, 0x80, 0x85, 0x86,
+			0x8f, 0x8c, 0x89, 0x8a, 0xab, 0xa8, 0xad, 0xae, 0xa7, 0xa4, 0xa1,
+			0xa2, 0xb3, 0xb0, 0xb5, 0xb6, 0xbf, 0xbc, 0xb9, 0xba, 0xfb, 0xf8,
+			0xfd, 0xfe, 0xf7, 0xf4, 0xf1, 0xf2, 0xe3, 0xe0, 0xe5, 0xe6, 0xef,
+			0xec, 0xe9, 0xea, 0xcb, 0xc8, 0xcd, 0xce, 0xc7, 0xc4, 0xc1, 0xc2,
+			0xd3, 0xd0, 0xd5, 0xd6, 0xdf, 0xdc, 0xd9, 0xda, 0x5b, 0x58, 0x5d,
+			0x5e, 0x57, 0x54, 0x51, 0x52, 0x43, 0x40, 0x45, 0x46, 0x4f, 0x4c,
+			0x49, 0x4a, 0x6b, 0x68, 0x6d, 0x6e, 0x67, 0x64, 0x61, 0x62, 0x73,
+			0x70, 0x75, 0x76, 0x7f, 0x7c, 0x79, 0x7a, 0x3b, 0x38, 0x3d, 0x3e,
+			0x37, 0x34, 0x31, 0x32, 0x23, 0x20, 0x25, 0x26, 0x2f, 0x2c, 0x29,
+			0x2a, 0x0b, 0x08, 0x0d, 0x0e, 0x07, 0x04, 0x01, 0x02, 0x13, 0x10,
+			0x15, 0x16, 0x1f, 0x1c, 0x19, 0x1a };
+	public static final String[][] galois = { { "02", "03", "01", "01" },
+			{ "01", "02", "03", "01" }, { "01", "01", "02", "03" },
+			{ "03", "01", "01", "02" } };
 	// It will create two-dimensional array of keyMatrix[4][4]
 	private final static String[][] keyMatrix = new String[4][4];
 	// It will create two-dimensional array of WMatrix[4][44]
 	private final static String[][] WMatrix = new String[4][44];
 
-	/*
-	 * Produces the matrix with 4*4 by taking KeyHex(128-bit) input
+	
+	/**
+	 * aesRoundKeys
+	 * 
+	 * This function takes the key value as 4*4 matrix and performs split
+	 * operation on it.It will split the string[][] for every 2-bits and
+	 * calls getWMatrix() and printKeys() on it.
+	 * @param KeyHex is the encryption key
 	 */
 	public static void aesRoundKeys(String KeyHex) {
 		int value = 0;
@@ -93,12 +164,17 @@ public class AesCipher {
 		printKeys();
 	}
 
-	/*
-	 * It will perform the XOR operation of hexadecimal values hex1 is first
-	 * value and hex 2 is the second value hexResult is the result produced
-	 * after XORing.
-	 */
+	
 
+	/**
+	 * ComputeXOR
+	 * 
+	 * This function performs bitwise XOR of two matrices with 4 elements 
+	 * each. 
+	 * @param hex1 is the first value
+	 * @param hex2 is the second value
+	 * @return hexResult is the XOR result
+	 */
 	private static String ComputeXOR(String hex1, String hex2) {
 		int hexVal1 = Integer.parseInt(hex1, 16);
 		int hexVal2 = Integer.parseInt(hex2, 16);
@@ -108,8 +184,13 @@ public class AesCipher {
 
 	}
 
-	/*
-	 * Takes an input from S_Box using inHex based on firstInt and secondInt
+	
+	/**
+	 * aesSBox
+	 * This function returns the corresponding hex integer by referring
+	 * the look up table
+	 * @param inHex input hexadecimal to produce integer value
+	 * @return the transformed value from look up table
 	 */
 	private static String aesSBox(String inHex) {
 		Integer firstInt = Integer.parseInt(inHex.split("")[0], 16);
@@ -117,17 +198,24 @@ public class AesCipher {
 		return S_Box[firstInt][secondInt];
 
 	}
-
-	/*
-	 * Takes the Rcon value using rounds
+	
+	/**
+	 * aesRcon
+	 * This function returns a round constant value
+	 * @param round is the round number which we are going to use everytime
+	 * usually it ranges between 0 to 10
+	 * @return the corresponding round value from lookup table
 	 */
 	private static String aesRcon(int round) {
 		return Round_Keys[0][round / 4];
 
 	}
-
-	/*
-	 * To perform operations on WMatrix to generate elements into array
+    /**
+     * getWMatrix
+     * This function generates 11 round keys using an encryption key.In this
+     * we are copying the 1st 4*4 matrix then performing the operations based
+     * on whether the value of j is multiple of 4 or not. 
+	 * 
 	 */
 	private static void getWMatrix() {
 		// It will create the new matrix
@@ -164,9 +252,11 @@ public class AesCipher {
 		}
 
 	}
-
-	/*
-	 * It will print the all round keys in 10 rounds
+    /**
+     * printKeys
+     * It will print the keys based on round number.For round number 1 to 10
+     * it will print its corresponding key value.
+	 * 
 	 */
 	public static void printKeys() {
 		int Rounds_key = 1;
@@ -181,7 +271,146 @@ public class AesCipher {
 			Rounds_key++;
 		}
 		System.out.println("");
+	}
+	
+	/**
+	 * This function performs XOR operation on two 4*4 matrices and outputs
+	 * the result
+	 * @param sHex is the first input matrix
+	 * @param keyHex is the second input matrix
+	 * @return outStateHex which have the XORed result
+	 */
+	private static String[][] aesStateXOR(String[][] sHex, String[][] keyHex) {
+        String[][] outStateHex;
+		outStateHex = new String[4][4];
+		for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < 4; j++) {
+				outStateHex[i][j] = ComputeXOR(sHex[i][j], keyHex[i][j]);
+			}
+		}
+		return outStateHex;
+	}
+	/**
+	 * This function substitutes its each element with its corresponding
+	 * S-Box value 
+	 * @param inStateHex is the input matrix
+	 * @return outStateHex is substituted matrix
+	 */
+	private static String[][] aesNibbleSub(String[][] inStateHex) {
+		String[][] outStateHex = new String[4][4];
+		for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < 4; j++) {
+				outStateHex[i][j] = aesSBox(inStateHex[i][j]);
+			}
+		}
+		return outStateHex;
 
 	}
+    /**
+     * This function performs left shift operation on each element
+	 * @param inStateHex is the input matrix with size 4*4
+	 * @return outStateHex is the shifted matrix with size 4*4
+	 */
+	protected static String[][] aesShiftRow(String[][] inStateHex) {
+		int counter = 0;
+		String[][] outStateHex = new String[4][4];
+		String[] tempState = new String[4];
+		for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < 4; j++) {
+				tempState[i] = inStateHex[i][j];
 
+			}
+			for (int k = 0; k < counter; k++) {
+				String newValue = tempState[0];
+				tempState[0] = tempState[1];
+				tempState[1] = tempState[2];
+				tempState[2] = tempState[3];
+				tempState[3] = newValue;
+			}
+			for (int n = 0; n < 4; n++) {
+				outStateHex[i][n] = tempState[n];
+			}
+			counter++;
+		}
+		return outStateHex;
+	}
+    /**
+     * It makes use of Galois matrix to mix and multiply the columns 
+     * of input matrix
+	 * @param inStateHex the input matrix
+	 * @return mixed and multiplied matrix
+	 */
+	public static String[][] aesMixColumns(String[][] inStateHex) {
+		String[][] mixColumnMatrix = new String[4][4];
+        for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < 4; j++) {
+				mixColumnMatrix[i][j] = mixColumnAdd(inStateHex, galois, i, j);
+			}
+		}
+		return mixColumnMatrix;
+	}
+
+	/**
+	 * This function will add the columns by XORing
+	 * @param inStateHex the left-shift state matrix
+	 * @param mixclmn is the Galois matrix
+	 * @param i is the row value of the matrix
+	 * @param j is the column value of the matrix
+	 * @return will perform addition after multiplication of rows and columns
+	 */
+	private static String mixColumnAdd(String[][] inStateHex,
+			String[][] mixclmn, int i, int j) {
+		int mcsum = 0;
+		for (int k = 0; k < 4; k++) {
+			int a = Integer.parseInt(mixclmn[i][k]);
+			int b = Integer.parseInt(inStateHex[k][j]);
+			mcsum ^= mcCal(a, b);
+         }
+		return mcsum;
+    }
+
+	/**
+	 * This method will help us to multiply the values based on lookup tables
+	 * @param a value in the Galois matrix
+	 * @param b element in input matrix
+	 * @return values after multiplied with 1,2 and 3
+	 */
+	private static int mcCal(int a, int b) {
+		if (a == 1) {
+			return b;
+		} else if (a == 2) {
+			return mc2[b / 16][b % 16];
+		} else if (a == 3) {
+			return mc3[b / 16][b % 16];
+		}
+		return 0;
+	}
+	/**
+	 * This method will perform encryption of plaintext using hexadecimal 
+	 * key input.
+	 * @param pTextHex is the plaintext we want to encrypt
+	 * @param keyHex is the key value to be used
+	 * @return it will return the ciphertext 
+	 */
+	public static String[][] aes(String pTextHex, String keyHex) {
+		aesRoundKeys(pTextHex);
+		String[][] cTextHex = new String[4][4];
+		String[][] key = new String[4][4];
+		cTextHex = aesStateXOR(keyMatrix, key);
+		for (int i = 1; i < 11; i++) {
+			if (i != 10) {
+				cTextHex = aesNibbleSub(cTextHex);
+				cTextHex = aesShiftRow(cTextHex);
+				cTextHex = aesMixColumns(cTextHex);
+				cTextHex = aesStateXOR(cTextHex, key);
+			}
+
+		}
+		for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < 4; j++) {
+				System.out.println(cTextHex[i][j].toUpperCase());
+			}
+		}
+		return cTextHex;
+     }
 }
