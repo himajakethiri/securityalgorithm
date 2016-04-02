@@ -1,5 +1,5 @@
 /**
- * file: AesCipher.java 
+ * file: AEScipher.java 
  * author: Himaja Kethiri 
  * course: Security Algorithms and
  * Protocols assignment: lab 3 
