@@ -7,7 +7,7 @@
  * version: 1.4
  * 
  * This file contains all methods which we have used to generate 11 round keys
- * by implementing in AES algorithm.It also contains the some methods to encrypt
+ * by implementing in AES algorithm.It also contains the some methods to encrypting
  * the plaintext using key.
  * 
  */
