@@ -445,7 +445,7 @@ public class AEScipher {
         }
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                System.out.println("jjjj " + cTextHex[i][j].toUpperCase());
+                System.out.println("Cipher text: " + cTextHex[i][j].toUpperCase());
             }
         }
         return cTextHex;
