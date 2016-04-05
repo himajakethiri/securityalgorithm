@@ -4,7 +4,9 @@ import java.util.Scanner;
  * file: Driver.java 
  * author: Himaja Kethiri 
  * course: Security Algorithms and Protocols 
- * assignment: lab 3 Due date: March 31, 2016 version: 1.4
+ * assignment: lab 3
+ * Due date: March 31, 2016 
+ * version: 1.4
  * 
  * This file contains the inputs we want to give to the AEScipher class and
  * aes() using Scanner class.
