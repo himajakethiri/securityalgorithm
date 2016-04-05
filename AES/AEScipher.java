@@ -9,13 +9,10 @@ import java.util.HashMap;
  * version: 1.4
  * 
  * This file contains all methods which we have used to generate 11 round keys
-<<<<<<< HEAD:AES/AesCipher.java
  * by implementing in AES algorithm.It also contains the some methods to
  * encrypting the plaintext using key.
-=======
  * by implementing in AES algorithm.It also contains the some methods to encrypting
  * the plaintext using key.
->>>>>>> 567772b1262753bbb0302225cb8d36d885a8a125:AES/AEScipher.java
  * 
  */
 public class AEScipher {
@@ -193,7 +190,7 @@ public class AEScipher {
      * 
      * @param inHex
      *            input hexadecimal to produce integer value
-     * @return the transformed value from look up table
+     * @return S_Box[][] the transformed value from look up table
      */
     private static String aesSBox(String inHex) {
         Integer firstInt = Integer.parseInt(inHex.split("")[0], 16);
@@ -370,9 +367,7 @@ public class AEScipher {
         }
         return outStateHex;
     }
-
     static String[][] plainText1 = new String[4][4];
-
     /**
      * This function takes plaintext String and converts it into matrix
      * 
@@ -427,11 +422,8 @@ public class AEScipher {
         System.out.print("Cipher text is:");
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-<<<<<<< HEAD:AES/AesCipher.java
                 System.out.print(plainText1[j][i].toUpperCase());
-=======
                 System.out.println("Cipher text: " + cTextHex[i][j].toUpperCase());
->>>>>>> 567772b1262753bbb0302225cb8d36d885a8a125:AES/AEScipher.java
             }
         }
     }
