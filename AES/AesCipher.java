@@ -1,14 +1,16 @@
+import java.util.HashMap;
+
 /**
- * file: AesCipher.java 
+ * file: AEScipher.java 
  * author: Himaja Kethiri 
- * course: Security Algorithms and
- * Protocols assignment: lab 3 
- * Due date: March 31, 2016 
+ * course: Security Algorithms and Protocols 
+ * assignment: lab 3 Due 
+ * date: March 31, 2016 
  * version: 1.4
  * 
  * This file contains all methods which we have used to generate 11 round keys
- * by implementing in AES algorithm.It also contains the some methods to encrypt
- * the plaintext using key.
+ * by implementing in AES algorithm.It also contains the some methods to
+ * encrypting the plaintext using key.
  * 
  */
 public class AEScipher {
@@ -105,6 +107,10 @@ public class AEScipher {
             0xd3, 0xd1, 0xd7, 0xd5, 0xcb, 0xc9, 0xcf, 0xcd, 0xc3, 0xc1, 0xc7,
             0xc5, 0xfb, 0xf9, 0xff, 0xfd, 0xf3, 0xf1, 0xf7, 0xf5, 0xeb, 0xe9,
             0xef, 0xed, 0xe3, 0xe1, 0xe7, 0xe5 };
+    // Creating mul2 hashmap with integer values
+    public static HashMap<Integer, Integer> mul2 = new HashMap<Integer, Integer>();
+    // Creating mul3 hashmap with integer values
+    public static HashMap<Integer, Integer> mul3 = new HashMap<Integer, Integer>();
     // Multiplication with 3 look-up table
     public static int[] mc3 = { 0x00, 0x03, 0x06, 0x05, 0x0c, 0x0f, 0x0a, 0x09,
             0x18, 0x1b, 0x1e, 0x1d, 0x14, 0x17, 0x12, 0x11, 0x30, 0x33, 0x36,
@@ -134,6 +140,7 @@ public class AEScipher {
     private final static String[][] keyMatrix = new String[4][4];
     // It will create two-dimensional array of WMatrix[4][44]
     private final static String[][] WMatrix = new String[4][44];
+
     /**
      * aesRoundKeys
      * 
@@ -154,7 +161,6 @@ public class AEScipher {
             }
         }
         getWMatrix();
-        printKeys();
     }
 
     /**
@@ -224,7 +230,6 @@ public class AEScipher {
                             WMatrix[i][j - 1]);
                 }
             }
-
             else {
                 // Performing left shift operation and transpose of matrix
                 W_New[0][0] = aesSBox(WMatrix[1][j - 1]);
@@ -242,26 +247,6 @@ public class AEScipher {
     }
 
     /**
-     * printKeys It will print the keys based on round number.For round number 1
-     * to 10 it will print its corresponding key value.
-     * 
-     */
-    public static void printKeys() {
-        int Rounds_key = 1;
-        int x = 0;
-        while (Rounds_key <= 11) {
-            for (int j = 1; j <= 4; j++, x++) {
-                for (int i = 0; i <= 3; i++) {
-                    System.out.print(WMatrix[i][x].toUpperCase());
-                }
-            }
-            System.out.println();
-            Rounds_key++;
-        }
-        System.out.println("");
-    }
-
-    /**
      * This function performs XOR operation on two 4*4 matrices and outputs the
      * result
      * 
@@ -272,13 +257,11 @@ public class AEScipher {
      * @return outStateHex which have the XORed result
      */
     protected static String[][] aesStateXOR(String[][] sHex, String[][] keyHex) {
-
         String[][] outStateHex;
         outStateHex = new String[4][4];
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 outStateHex[i][j] = ComputeXOR(sHex[i][j], keyHex[i][j]);
-                System.out.println(outStateHex[i][j]);
             }
         }
         return outStateHex;
@@ -297,7 +280,6 @@ public class AEScipher {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 outStateHex[i][j] = aesSBox(inStateHex[i][j]);
-                System.out.println(outStateHex[i][j] + "\t");
             }
         }
         return outStateHex;
@@ -316,7 +298,7 @@ public class AEScipher {
         String[] tempState = new String[4];
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                tempState[j] = inStateHex[j][i];
+                tempState[j] = inStateHex[i][j];
             }
             for (int k = 0; k < counter; k++) {
                 String newValue = tempState[0];
@@ -327,89 +309,77 @@ public class AEScipher {
             }
             for (int n = 0; n < 4; n++) {
                 outStateHex[i][n] = tempState[n];
-                System.out.println("shift matrix is:" + outStateHex[i][n]
-                        + "\t");
             }
             counter++;
         }
+        insertMap();
         return outStateHex;
     }
-    /**
-     * This function converts hex value to decimal value
-     * using input parameter
-     * @param hexInput is the input hexadecimal value
-     * @return decimal value
+
+    /*
+     * It will insert values into the hashmaps i2Map and i3Map
      */
-    public static int hexToDecimal(String hexInput) {
-        int decimal = 0;
-        int length = hexInput.length();
-        for (int i = 0; i < length; ++i) {
-            char c = hexInput.charAt(i);
-            int cValue = 0;
-            switch (c) {
-            case '1':
-                cValue = 1;
-                break;
-            case '2':
-                cValue = 2;
-                break;
-            }
-            decimal = 16 * decimal + cValue;
+    public static void insertMap() {
+        for (int i2Map = 0; i2Map < 256; i2Map++) {
+            mul2.put(i2Map, mc2[i2Map]);
         }
-        return decimal;
+        for (int i3Map = 0; i3Map < 256; i3Map++) {
+            mul3.put(i3Map, mc3[i3Map]);
+
+        }
     }
 
     /**
-     * It makes use of Multiplication look up tables to multiply 
-     * the columns of input matrix
+     * It makes use of Multiplication look up tables to multiply the columns of
+     * input matrix
      * 
      * @param inStateHex
      *            the input matrix
-     * @return outStateMatrix
-     *            the output matrix
+     * @return outStateMatrix the output matrix
      */
     protected static String[][] aesMixColumn(String[][] inStateHex) {
+        String[][] copyMatrix = new String[4][4];
+        copyMatrix = inStateHex;
         String[][] outStateHex = new String[4][4];
         int inputText[] = new int[4];
         int mixOut[] = new int[4];
+        for (int row = 0; row < 4; row++) {
+            for (int col = 0; col < 4; col++) {
+            }
+        }
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                inputText[j] = hexToDecimal(inStateHex[i][j]);
+                inputText[j] = Integer.parseInt(copyMatrix[j][i], 16);
             }
-            mixOut[0] = mc2[inputText[0]] ^ mc3[inputText[1]] ^ inputText[1]
-                    ^ inputText[3];
-            mixOut[1] = inputText[0] ^ mc2[inputText[1]] ^ mc3[inputText[2]]
-                    ^ inputText[3];
-            mixOut[2] = inputText[0] ^ inputText[1] ^ mc2[inputText[2]]
-                    ^ mc3[inputText[1]];
-            mixOut[3] = mc3[inputText[0]] ^ inputText[1] ^ inputText[2]
-                    ^ mc2[inputText[3]];
+            mixOut[0] = mul2.get(inputText[0]) ^ mul3.get(inputText[1])
+                    ^ inputText[2] ^ inputText[3];
+            mixOut[1] = inputText[0] ^ mul2.get(inputText[1])
+                    ^ mul3.get(inputText[2]) ^ inputText[3];
+            mixOut[2] = inputText[0] ^ inputText[1] ^ mul2.get(inputText[2])
+                    ^ mul3.get(inputText[3]);
+            mixOut[3] = mul3.get(inputText[0]) ^ inputText[1] ^ inputText[2]
+                    ^ mul2.get(inputText[3]);
             for (int k = 0; k < 4; k++) {
-                String X = "";
-                outStateHex[i][k] = X;
-                outStateHex[i][k] = Integer.toHexString(mixOut[k]);
-                while (X.length() < 2) {
-                    outStateHex[i][k] = "0" + Integer.toHexString(mixOut[k]);
-                    System.out.println("The output:" + outStateHex[i][k]);
-
-                }
+                outStateHex[k][i] = Integer.toHexString(mixOut[k]);
             }
         }
         return outStateHex;
     }
 
-    static String[][] text1 = new String[4][4];
+    static String[][] plainText1 = new String[4][4];
+
     /**
-     * This function takes plaintext String and converts it into
-     * matrix
-     * @param text is the input plaintext
+     * This function takes plaintext String and converts it into matrix
+     * 
+     * @param text
+     *            is the input plaintext
      */
-    public static void plainMatrix(String text) {
+    public static void plainMatrix(String plainText) {
         int value = 0;
         for (int j = 0; j < 4; j++) {
             for (int i = 0; i < 4; i++) {
                 // Splits the key for every 2 values using subString() method.
-                text1[i][j] = text.substring(value, value + 2);
+                plainText1[i][j] = plainText.substring(value, value + 2);
                 value += 2;
             }
         }
@@ -423,31 +393,37 @@ public class AEScipher {
      *            is the plaintext we want to encrypt
      * @param keyHex
      *            is the key value to be used
-     * @return it will return the ciphertext
      */
-    public static String[][] aes(String pTextHex, String keyHex) {
-        String[][] cTextHex = new String[4][4];
-        String[][] key = new String[4][4];
-        aesRoundKeys(keyHex);
+    static int rounds = 0;
+    public static void aes(String pTextHex, String keyHex) {
         plainMatrix(pTextHex);
-        cTextHex = aesStateXOR(text1, keyMatrix);
-        for (int i = 1; i < 11; i++) {
-            if (i != 10) {
-                cTextHex = aesNibbleSub(cTextHex);
-                cTextHex = aesShiftRow(cTextHex);
-                cTextHex = aesMixColumn(cTextHex);
-                cTextHex = aesStateXOR(cTextHex, key);
+        aesRoundKeys(keyHex);
+        int wcol = 0;
+        int count = 0;
+        while (wcol < 44) {
+            for (int col = 0; col < 4; col++, wcol++) {
+                for (int row = 0; row < 4; row++) {
+                    keyMatrix[row][col] = WMatrix[row][wcol];
+                }
             }
-            cTextHex = aesNibbleSub(cTextHex);
-            cTextHex = aesShiftRow(cTextHex);
-            cTextHex = aesMixColumn(cTextHex);
-            cTextHex = aesStateXOR(cTextHex, key);
+            if (count == 10)
+                plainText1 = aesStateXOR(plainText1, keyMatrix);
+            else {
+                rounds = count++;
+                // text1 = roundCal(text1, keyMatrix);
+                plainText1 = aesStateXOR(plainText1, keyMatrix);
+                plainText1 = aesNibbleSub(plainText1);
+                plainText1 = aesShiftRow(plainText1);
+                if (rounds != 9) {
+                    plainText1 = aesMixColumn(plainText1);
+                }
+            }
         }
+        System.out.print("Cipher text is:");
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                System.out.println("jjjj " + cTextHex[i][j].toUpperCase());
+                System.out.print(plainText1[j][i].toUpperCase());
             }
         }
-        return cTextHex;
     }
 }
