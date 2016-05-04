@@ -34,15 +34,15 @@ public class Driver {
         if (text.equals("e")) {
             System.out.println("Encryption option is selected");
             plainText = input.nextLine().trim();
-            System.out.println("PlainText:" + plainText);
             keyInput = input.nextLine().trim();
+            System.out.println("PlainText:" + plainText);
             System.out.println("Key:" + keyInput);
             AESEncrypt.aes(plainText, keyInput);
         } else if (text.equals("d")) {
             System.out.println("Decryption option is selected");
             cipherText = input.nextLine().trim();
-            System.out.println("CipherText:" + cipherText);
             keyInput = input.nextLine().trim();
+            System.out.println("CipherText:" + cipherText);
             System.out.println("Key:" + keyInput);
             AESDecrypt.aes(cipherText, keyInput);
         } else {
