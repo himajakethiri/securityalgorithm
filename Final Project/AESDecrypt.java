@@ -573,7 +573,6 @@ public class AESDecrypt {
             wcol -= 4;
             if (count == roundCount) {
                 cipherText = aesStateXOR(cipherText, keyMatrix);
-                System.out.print("Plain text is:");
                 for (int i = 0; i < 4; i++) {
                     for (int j = 0; j < 4; j++) {
                         //System.out.print(cipherText[j][i].toUpperCase());
@@ -581,7 +580,6 @@ public class AESDecrypt {
                         
                     }
                 }
-                System.out.println(cipher);
             }
             if (count >= 1 && count <= roundCount - 1) {
                 rounds = count++;

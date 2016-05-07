@@ -72,7 +72,8 @@ public class Driver {
 
             }
         }
-        System.out.println(paddedMessage.toUpperCase());
+        System.out.print("Plain Text:");
+        System.out.print(paddedMessage.toUpperCase());
 
     }
 
