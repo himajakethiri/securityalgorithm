@@ -439,8 +439,8 @@ public class AESEncrypt {
      *            is the key value to be used
      */
     static int rounds = 0;
-
-    public static void aes(String pTextHex, String keyHex) {
+    static StringBuilder plain = new StringBuilder();
+    public static String aes(String pTextHex, String keyHex) {
         plainMatrix(pTextHex);
         getDetails(keyHex);
         int wcol = 0;
@@ -471,9 +471,14 @@ public class AESEncrypt {
                 System.out.print("Cipher text is:");
                 for (int i = 0; i < 4; i++) {
                     for (int j = 0; j < 4; j++) {
-                        System.out.print(plainText1[j][i].toUpperCase());
+                        //System.out.print(plainText1[j][i].toUpperCase());
+                         plain = plain.append(plainText1[j][i]);
+                        
+                        
                     }
                 }
+                System.out.print(plain);
+                
             } else {
                 rounds = count++;
                 plainText1 = aesStateXOR(plainText1, keyMatrix);
@@ -484,5 +489,6 @@ public class AESEncrypt {
                 }
             }
         }
+        return plain.toString();
     }
 }
